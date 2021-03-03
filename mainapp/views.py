@@ -18,7 +18,7 @@ def index(request):
     return render(request, 'mainapp/index.html', context)
 
 
-def products(request):
+def products(request, id=None):
     context = {
         'title': 'GeekShop - Каталог',
         'year': datetime.now(),
