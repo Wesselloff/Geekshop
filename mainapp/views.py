@@ -26,7 +26,4 @@ def products(request, id=None):
         'categories': ProductCategory.objects.all()
     }
 
-    # file_path = os.path.join(folder, 'fixtures/products.json')
-    # with open(file_path, 'r', encoding='utf-8') as file:
-    #     context.update(json.load(file))
     return render(request, 'mainapp/products.html', context)
