@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from authapp.models import User
 from django.core.exceptions import ValidationError
+from django import forms
 
 
 class UserLoginForm(AuthenticationForm):
@@ -43,13 +44,12 @@ class UserRegisterForm(UserCreationForm):
     def clean_first_name(self):
         name = self.cleaned_data['first_name']
         if len(name) == 0:
-            # для проверки работоспособности
-            print('Не задано имя')
             raise ValidationError('Введите ваше имя!')
         return name
 
 
 class UserProfileForm(UserChangeForm):
+    avatar = forms.ImageField(widget=forms.FileInput(), required=False)
 
     class Meta:
         model = User
@@ -61,4 +61,12 @@ class UserProfileForm(UserChangeForm):
             field.widget.attrs['class'] = 'form-control py-4'
         self.fields['username'].widget.attrs['readonly'] = True
         self.fields['email'].widget.attrs['readonly'] = True
+        self.fields['avatar'].widget.attrs['class'] = 'custom-file-input'
 
+    def clean_first_name(self):
+        name = self.cleaned_data['first_name']
+        if len(name) == 0:
+            # для проверки работоспособности
+            print('Не задано имя')
+            raise ValidationError('Введите ваше имя!')
+        return name
