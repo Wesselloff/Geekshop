@@ -1,6 +1,7 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from authapp.models import User
 from django.core.exceptions import ValidationError
+from django import forms
 
 
 class UserLoginForm(AuthenticationForm):
@@ -39,6 +40,28 @@ class UserRegisterForm(UserCreationForm):
         self.fields['password2'].label = 'Подтверждение пароля'
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
+
+    def clean_first_name(self):
+        name = self.cleaned_data['first_name']
+        if len(name) == 0:
+            raise ValidationError('Введите ваше имя!')
+        return name
+
+
+class UserProfileForm(UserChangeForm):
+    avatar = forms.ImageField(widget=forms.FileInput(), required=False)
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'avatar', 'username', 'email')
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-4'
+        self.fields['username'].widget.attrs['readonly'] = True
+        self.fields['email'].widget.attrs['readonly'] = True
+        self.fields['avatar'].widget.attrs['class'] = 'custom-file-input'
 
     def clean_first_name(self):
         name = self.cleaned_data['first_name']
