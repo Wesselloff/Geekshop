@@ -34,7 +34,7 @@
                     <tbody>
                     {% for i in users %}
                         <tr>
-                            <td><a href="#" style="color: dodgerblue">{{ i.username }}</a></td>
+                            <td><a href="{% url 'admin_staff:admin_users_update' i.id %}" style="color: dodgerblue">{{ i.username }}</a></td>
                             <td>{{ i.first_name }}</td>
                             <td>{{ i.last_name }}</td>
                             <td>{{ i.email }}</td>
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="card-footer">
-            <a href="admin-users-create.html">
+            <a href="{% url 'admin_staff:admin_users_create' %}">
                 <button class="btn btn-success">Создать пользователя</button>
             </a>
         </div>

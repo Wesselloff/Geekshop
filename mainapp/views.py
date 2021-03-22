@@ -1,13 +1,10 @@
 from django.shortcuts import render
 from mainapp.models import Product, ProductCategory
-import os
-import json
+from django.core.paginator import Paginator
+
 from datetime import datetime
 
-folder = os.path.dirname(__file__)
 
-
-# Create your views here.
 def index(request):
     context = {
         'title': 'geekshop',
@@ -18,12 +15,20 @@ def index(request):
     return render(request, 'mainapp/index.html', context)
 
 
-def products(request, id=None):
+def products(request, category_id=None, page=1):
     context = {
         'title': 'GeekShop - Каталог',
         'year': datetime.now(),
-        'prods': Product.objects.all(),
+        # 'prods': Product.objects.all(),
         'categories': ProductCategory.objects.all()
     }
-
+    if category_id:
+        # context.update({'prods': Product.objects.filter(category_id=category_id)})
+        products = Product.objects.filter(category_id=category_id)
+    else:
+        # context.update({'prods': Product.objects.all()})
+        products = Product.objects.all()
+    paginator = Paginator(products, per_page=3)
+    paged_products = paginator.page(page)
+    context.update({'prods': paged_products})
     return render(request, 'mainapp/products.html', context)
