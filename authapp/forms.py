@@ -1,3 +1,6 @@
+from hashlib import sha1
+from random import random
+
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from authapp.models import User
 from django.core.exceptions import ValidationError
@@ -70,3 +73,10 @@ class UserProfileForm(UserChangeForm):
             print('Не задано имя')
             raise ValidationError('Введите ваше имя!')
         return name
+
+    def save(self):
+        user = super(UserProfileForm).save()
+        user.is_active = False
+        salt = sha1(str(random()).encode('utf8')).hexdigest()[:6]
+        user.activation_key = sha1((user.email + salt).encode('utf8')).hexdigest()
+        user.save()
